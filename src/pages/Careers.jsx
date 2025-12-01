@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import Navbar from "../components/Navbar";
 import AdvancedFooter from "../components/AdvancedFooter";
 
-// Enhanced Particle System Component
-const FloatingParticles = ({ count = 35 }) => {
+// Optimized Particle System
+const FloatingParticles = ({ count = 8 }) => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {[...Array(count)].map((_, i) => (
@@ -14,26 +14,23 @@ const FloatingParticles = ({ count = 35 }) => {
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
-            width: `${Math.random() * 5 + 2}px`,
-            height: `${Math.random() * 5 + 2}px`,
+            width: `${Math.random() * 1.5 + 0.5}px`,
+            height: `${Math.random() * 1.5 + 0.5}px`,
           }}
           animate={{
-            y: [0, -100, -150, -100, 0],
-            x: [0, Math.random() * 60 - 30, Math.random() * 40 - 20, 0],
-            opacity: [0, 0.8, 0.6, 0],
-            scale: [0, 1.2, 0.8, 0],
+            y: [0, -40, 0],
+            opacity: [0, 0.4, 0],
           }}
           transition={{
-            duration: Math.random() * 12 + 10,
+            duration: Math.random() * 3 + 4,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: Math.random() * 5,
+            ease: "linear",
+            delay: Math.random() * 2,
           }}
           className={`${
-            i % 4 === 0 ? "bg-cyan-400/50 shadow-lg shadow-cyan-400/30" :
-            i % 4 === 1 ? "bg-purple-400/50 shadow-lg shadow-purple-400/30" :
-            i % 4 === 2 ? "bg-emerald-400/50 shadow-lg shadow-emerald-400/30" :
-            "bg-amber-400/50 shadow-lg shadow-amber-400/30"
+            i % 3 === 0 ? "bg-cyan-400/60" :
+            i % 3 === 1 ? "bg-purple-400/60" :
+            "bg-emerald-400/60"
           }`}
         />
       ))}
@@ -41,224 +38,184 @@ const FloatingParticles = ({ count = 35 }) => {
   );
 };
 
-// Animated Text Character Component
-const AnimatedTextChar = ({ text, delay = 0 }) => {
-  const letters = Array.from(text);
-
-  return (
-    <span className="inline-block">
-      {letters.map((char, index) => (
-        <motion.span
-          key={`${char}-${index}`}
-          initial={{ opacity: 0, y: 50, scale: 0.8 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{
-            duration: 0.6,
-            delay: delay + index * 0.05,
-            type: "spring",
-            stiffness: 150,
-            damping: 20
-          }}
-          className="inline-block"
-        >
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
-      ))}
-    </span>
-  );
-};
-
-// Professional Gradient Orb with Enhanced Animation
-const GradientOrb = ({ size = 400, color = "cyan", position = {} }) => {
-  return (
-    <motion.div
-      animate={{
-        scale: [1, 1.3, 1],
-        opacity: [0.3, 0.6, 0.3],
-        rotate: [0, 180, 360],
-      }}
-      transition={{
-        duration: 8,
-        repeat: Infinity,
-        ease: "linear",
-      }}
-      className={`absolute rounded-full blur-3xl ${
-        color === "cyan" ? "bg-gradient-to-br from-cyan-500/25 via-blue-500/20 to-teal-500/25" :
-        color === "purple" ? "bg-gradient-to-br from-purple-500/25 via-pink-500/20 to-violet-500/25" :
-        "bg-gradient-to-br from-emerald-500/25 via-green-500/20 to-cyan-500/25"
-      }`}
-      style={{
-        width: size,
-        height: size,
-        ...position
-      }}
-    />
-  );
-};
-
-// Enhanced Magnetic Button with Ripple Effect
-const MagneticButton = ({ children, onClick, className = "" }) => {
-  const ref = useRef(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouse = (e) => {
-    const { clientX, clientY } = e;
-    const { width, height, left, top } = ref.current.getBoundingClientRect();
-    const x = (clientX - (left + width / 2)) * 0.1;
-    const y = (clientY - (top + height / 2)) * 0.1;
-    setPosition({ x, y });
-  };
-
-  const reset = () => {
-    setPosition({ x: 0, y: 0 });
-    setIsHovered(false);
-  };
-
-  const { x, y } = position;
-
-  return (
-    <motion.button
-      ref={ref}
-      onMouseMove={(e) => {
-        handleMouse(e);
-        setIsHovered(true);
-      }}
-      onMouseLeave={reset}
-      onClick={onClick}
-      animate={{ x, y }}
-      transition={{ type: "spring", stiffness: 250, damping: 15 }}
-      className={`relative overflow-hidden group ${className}`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      {/* Ripple Effects */}
-      <AnimatePresence>
-        {isHovered && (
-          <>
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ scale: 0, opacity: 0.8 }}
-                animate={{ scale: 2, opacity: 0 }}
-                exit={{ scale: 2.5, opacity: 0 }}
-                transition={{ duration: 0.6, delay: i * 0.2 }}
-                className="absolute inset-0 rounded-xl bg-white/20"
-              />
-            ))}
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Main Content */}
-      <div className="relative z-10">
-        {children}
-      </div>
-
-      {/* Animated Gradient Background */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500 opacity-100"
-        animate={{
-          backgroundPosition: ['0% 0%', '200% 200%'],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-        style={{
-          backgroundSize: '200% 200%',
-        }}
-      />
-
-      {/* Shine Effect */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100"
-        animate={{
-          x: ['-100%', '200%'],
-        }}
-        transition={{
-          duration: 1.2,
-          repeat: Infinity,
-          delay: 0.5,
-        }}
-      />
-    </motion.button>
-  );
-};
-
 // Scroll Progress Indicator
 const ScrollProgress = () => {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 150,
-    damping: 20,
+    stiffness: 100,
+    damping: 30,
     restDelta: 0.001
   });
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-emerald-500 origin-left z-50 shadow-lg"
+      className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 via-purple-500 to-emerald-500 origin-left z-50"
       style={{ scaleX }}
     />
   );
 };
 
-// Enhanced Form Input Component
-const AnimatedFormField = ({ label, type = "text", name, value, onChange, required = false, textarea = false, delay = 0 }) => {
+// Magnetic Button Component
+const MagneticButton = ({ children, onClick, className = "" }) => {
+  const ref = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouse = (e) => {
+    if (!ref.current) return;
+    const { clientX, clientY } = e;
+    const { width, height, left, top } = ref.current.getBoundingClientRect();
+    const x = (clientX - (left + width / 2)) * 0.03;
+    const y = (clientY - (top + height / 2)) * 0.03;
+    setPosition({ x, y });
+  };
+
+  const reset = () => setPosition({ x: 0, y: 0 });
+
+  return (
+    <motion.button
+      ref={ref}
+      onMouseMove={handleMouse}
+      onMouseLeave={reset}
+      onClick={onClick}
+      animate={{ x: position.x, y: position.y }}
+      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      className={`relative overflow-hidden ${className}`}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <div className="relative z-10">{children}</div>
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    </motion.button>
+  );
+};
+
+// Animated Section Title
+const AnimatedSectionTitle = ({ title, gradient = "from-cyan-400 to-purple-400", delay = 0 }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay }}
+    className="relative inline-block"
+  >
+    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+      {title.split(' ').map((word, i) => (
+        <span
+          key={i}
+          className={`bg-gradient-to-r ${gradient} text-transparent bg-clip-text`}
+        >
+          {word}{' '}
+        </span>
+      ))}
+    </h2>
+    <motion.div
+      initial={{ scaleX: 0 }}
+      whileInView={{ scaleX: 1 }}
+      transition={{ duration: 0.8, delay: delay + 0.2 }}
+      className="h-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+    />
+  </motion.div>
+);
+
+// Floating Icon Card
+const FloatingIconCard = ({ icon, title, content, gradient, index }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay: index * 0.1 }}
+    whileHover={{ y: -5 }}
+    className="group relative"
+  >
+    <div className="relative p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-cyan-500/30 transition-all duration-300">
+      {/* Floating Icon */}
+      <motion.div
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        className={`w-16 h-16 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl mb-4`}
+      >
+        {icon}
+      </motion.div>
+      
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-slate-300 leading-relaxed">{content}</p>
+      
+      {/* Hover Effect */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      />
+    </div>
+  </motion.div>
+);
+
+// Animated Form Field
+const AnimatedFormField = ({ label, type = "text", name, value, onChange, required = false, textarea = false }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 25 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay, type: "spring" }}
-      className="space-y-3"
+      transition={{ duration: 0.4 }}
+      className="space-y-2"
     >
-      <label className="text-white font-semibold text-base flex items-center gap-1">
-        {label}
-        {required && <span className="text-cyan-400 text-sm">*</span>}
+      <label className="text-white font-medium text-sm">
+        {label} {required && <span className="text-cyan-400">*</span>}
       </label>
       
-      <motion.div
-        className="relative"
-        animate={isFocused ? { scale: 1.02 } : { scale: 1 }}
-      >
+      <div className="relative">
         {textarea ? (
-          <motion.textarea
+          <textarea
             value={value}
             onChange={onChange}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             rows="4"
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-cyan-400 focus:bg-white/10 transition-all duration-300 outline-none resize-none text-base backdrop-blur-xl"
+            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-cyan-400 focus:bg-white/10 transition-all duration-300 outline-none resize-none backdrop-blur-sm"
             placeholder={`Enter your ${label.toLowerCase()}...`}
             required={required}
           />
+        ) : type === "file" ? (
+          <div className="relative">
+            <input
+              type="file"
+              name={name}
+              onChange={onChange}
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-cyan-400 focus:bg-white/10 transition-all duration-300 outline-none opacity-0 absolute z-10 cursor-pointer"
+              required={required}
+              accept=".pdf,.docx"
+            />
+            <div className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-between">
+              <span>{value ? value.name : "Choose file (.pdf or .docx)"}</span>
+              <span className="text-cyan-400">📁</span>
+            </div>
+          </div>
         ) : (
-          <motion.input
+          <input
             type={type}
             value={value}
             onChange={onChange}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-cyan-400 focus:bg-white/10 transition-all duration-300 outline-none text-base backdrop-blur-xl"
+            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:border-cyan-400 focus:bg-white/10 transition-all duration-300 outline-none backdrop-blur-sm"
             placeholder={`Enter your ${label.toLowerCase()}...`}
             required={required}
           />
         )}
         
-        {/* Animated Focus Indicator */}
-        <motion.div
-          className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full"
-          animate={isFocused ? { width: "100%" } : { width: "0%" }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        />
-      </motion.div>
+        {/* Focus Indicator */}
+        {isFocused && (
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.3 }}
+            className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full"
+          />
+        )}
+      </div>
     </motion.div>
   );
 };
 
+// Main Careers Component
 export default function Careers() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -272,39 +229,11 @@ export default function Careers() {
   const [submitted, setSubmitted] = useState(false);
   const containerRef = useRef(null);
 
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
-
-  const features = [
-    {
-      title: "Innovative Environment",
-      content: "At Veramasa, you will be part of a dynamic and innovative environment where cutting-edge technologies are at the forefront of everything we do. Our projects span across various sectors, including MedTech, AgriTech, and Media & Entertainment, providing diverse opportunities to work on groundbreaking solutions.",
-      gradient: "from-cyan-500/20 to-blue-500/20",
-      icon: "🚀",
-      color: "cyan"
-    },
-    {
-      title: "Career Growth",
-      content: "We are committed to the professional growth and development of our employees. Through continuous learning opportunities, mentorship programs, and career advancement pathways, we empower our team members to reach their full potential and achieve their career goals.",
-      gradient: "from-purple-500/20 to-pink-500/20",
-      icon: "📈",
-      color: "purple"
-    },
-    {
-      title: "Collaborative Culture",
-      content: "Our collaborative culture fosters teamwork, creativity, and knowledge sharing. At Veramasa, you will work alongside some of the brightest minds in the industry, exchanging ideas and developing innovative solutions together.",
-      gradient: "from-emerald-500/20 to-green-500/20",
-      icon: "👥",
-      color: "emerald"
-    },
-    {
-      title: "Employee Benefits",
-      content: "We offer a comprehensive benefits package designed to support the well-being and work-life balance of our employees. Our benefits include competitive salaries, health insurance, flexible working hours, remote work options, and more.",
-      gradient: "from-amber-500/20 to-orange-500/20",
-      icon: "⭐",
-      color: "amber"
-    }
-  ];
+  const { scrollYProgress } = useScroll({
+    container: containerRef
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], [0, -20]);
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -318,7 +247,7 @@ export default function Careers() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     setIsSubmitting(false);
     setSubmitted(true);
@@ -333,99 +262,79 @@ export default function Careers() {
         resume: null,
         comments: ""
       });
-    }, 5000);
+    }, 4000);
   };
 
   return (
-    <div className="min-h-screen bg-[#0b1020] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0b1020] text-white">
       <ScrollProgress />
       <Navbar />
       
-      <main ref={containerRef}>
-        {/* Enhanced Hero Section with Bigger Text */}
-        <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
-          <FloatingParticles count={40} />
+      <main ref={containerRef} className="relative">
+        {/* Hero Section */}
+        <section className="relative min-h-[90vh] flex items-center justify-center px-6 overflow-hidden">
+          {/* Background Effects */}
+          <div className="absolute inset-0">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl" />
+          </div>
           
-          {/* Enhanced Background Orbs */}
-          <GradientOrb size={500} color="cyan" position={{ top: '10%', left: '5%' }} />
-          <GradientOrb size={450} color="purple" position={{ top: '70%', right: '8%' }} />
-          <GradientOrb size={400} color="emerald" position={{ bottom: '10%', left: '20%' }} />
-
-          {/* Animated Grid Pattern */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.1 }}
-            transition={{ duration: 2 }}
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-                linear-gradient(90deg, transparent 24px, rgba(0, 234, 255, 0.1) 25px),
-                linear-gradient(180deg, transparent 24px, rgba(138, 44, 255, 0.1) 25px)
-              `,
-              backgroundSize: '25px 25px',
-            }}
-          />
-
+          <FloatingParticles count={6} />
+          
           <div className="relative z-10 max-w-6xl mx-auto text-center">
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              className="mb-16"
             >
-              {/* Main Title with Character Animation */}
+              {/* Main Title with Animated Gradient */}
               <motion.h1
-                initial={{ opacity: 0, y: 60 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.3, type: "spring" }}
-                className="text-7xl md:text-8xl lg:text-9xl font-black mb-8 tracking-tighter"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.2 }}
+                className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter"
               >
                 <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 text-transparent bg-clip-text">
-                  <AnimatedTextChar text="CAREERS" delay={0.5} />
+                  JOIN US
                 </span>
               </motion.h1>
               
-              {/* Enhanced Subtitle */}
+              {/* Subtitle */}
               <motion.p
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.8, type: "spring" }}
-                className="text-3xl md:text-4xl lg:text-5xl text-slate-200 mb-8 leading-tight font-light max-w-4xl mx-auto"
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed max-w-3xl mx-auto font-light"
               >
-                <AnimatedTextChar 
-                  text="Join us in shaping the future through innovation and cutting-edge technology" 
-                  delay={1.0}
-                />
+                At Veramasa, we believe in the power of innovation and technology to transform industries and create lasting impact.
+              </motion.p>
+              
+              {/* Company Description */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="text-lg text-slate-400 mb-12 leading-relaxed max-w-4xl mx-auto"
+              >
+                As a leading IT company specializing in Data Science, AI, ML, Web Development, and Application Development, 
+                we are always on the lookout for talented individuals who share our passion for excellence and innovation.
               </motion.p>
 
-              {/* Enhanced CTA Button */}
+              {/* CTA Button */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.5, type: "spring" }}
-                className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12"
+                transition={{ duration: 0.8, delay: 0.8 }}
               >
                 <MagneticButton
-                  onClick={() => document.getElementById('application').scrollIntoView({ behavior: 'smooth' })}
-                  className="px-16 py-6 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold rounded-2xl text-xl shadow-2xl hover:shadow-cyan-500/30 transition-all duration-300"
+                  onClick={() => document.getElementById('application-form').scrollIntoView({ behavior: 'smooth' })}
+                  className="px-12 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold rounded-2xl text-lg shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 group"
                 >
-                  <span className="relative z-10 flex items-center gap-3">
+                  <span className="flex items-center gap-2">
+                    Apply Now
                     <motion.span
-                      animate={{ 
-                        x: [0, 5, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      🚀
-                    </motion.span>
-                    Start Your Journey
-                    <motion.span
-                      animate={{ 
-                        x: [0, 5, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
                     >
                       →
                     </motion.span>
@@ -435,179 +344,96 @@ export default function Careers() {
             </motion.div>
           </div>
 
-          {/* Enhanced Scroll Indicator */}
+          {/* Scroll Indicator */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2.5 }}
+            transition={{ delay: 1.5 }}
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
           >
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="flex flex-col items-center gap-3"
-            >
-              <span className="text-slate-400 text-sm font-light tracking-wide">DISCOVER OPPORTUNITIES</span>
-              <div className="w-6 h-10 border-2 border-cyan-400/60 rounded-full flex justify-center shadow-lg shadow-cyan-400/20">
-                <motion.div
-                  animate={{ y: [0, 16, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="w-1 h-3 bg-cyan-400 rounded-full mt-2 shadow-lg shadow-cyan-400/50"
-                />
-              </div>
-            </motion.div>
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-slate-400 text-xs font-light tracking-wide">EXPLORE MORE</span>
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="w-6 h-10 border border-cyan-400/30 rounded-full flex justify-center"
+              >
+                <div className="w-1 h-2 bg-cyan-400 rounded-full mt-2" />
+              </motion.div>
+            </div>
           </motion.div>
         </section>
 
-        {/* Enhanced Features Section */}
-        <section className="py-24 px-6 relative">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, type: "spring" }}
-              className="text-center mb-20"
-            >
-              <motion.h2
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white"
-              >
-                Why Choose <span className="bg-gradient-to-r from-cyan-400 to-purple-400 text-transparent bg-clip-text">Veramasa</span>?
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-xl text-slate-300 max-w-2xl mx-auto"
-              >
-                Discover what makes Veramasa the perfect place to grow your career and make an impact
-              </motion.p>
-            </motion.div>
+        {/* Why Veramasa Section */}
+        <section className="py-20 px-6 bg-gradient-to-b from-[#0b1020] to-[#090d1a]">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <AnimatedSectionTitle title="Why Choose Veramasa?" gradient="from-cyan-400 to-purple-400" />
+            </div>
 
-            {/* Enhanced Feature Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: index * 0.2, type: "spring" }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group relative"
-                >
-                  <div className={`relative p-8 rounded-3xl bg-gradient-to-br ${feature.gradient} border border-white/10 backdrop-blur-xl overflow-hidden h-full`}>
-                    
-                    {/* Floating Animation */}
-                    <motion.div
-                      animate={{ y: [0, -10, 0] }}
-                      transition={{ duration: 4, repeat: Infinity, delay: index * 0.5 }}
-                      className="relative z-10"
-                    >
-                      <div className="flex items-start gap-6 mb-6">
-                        <motion.div
-                          whileHover={{ 
-                            scale: 1.2,
-                            rotate: [0, -10, 10, 0]
-                          }}
-                          transition={{ duration: 0.5 }}
-                          className="text-3xl flex-shrink-0"
-                        >
-                          {feature.icon}
-                        </motion.div>
-                        <h3 className="text-2xl font-bold text-white flex-1">
-                          {feature.title}
-                        </h3>
-                      </div>
-                      
-                      <motion.p
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        className="text-slate-200 leading-relaxed text-lg"
-                      >
-                        {feature.content}
-                      </motion.p>
-                    </motion.div>
+              {/* Innovative Environment */}
+              <FloatingIconCard
+                icon="🚀"
+                title="Innovative Environment"
+                content="At Veramasa, you will be part of a dynamic and innovative environment where cutting-edge technologies are at the forefront of everything we do. Our projects span across various sectors, including MedTech, AgriTech, and Media & Entertainment, providing diverse opportunities to work on groundbreaking solutions."
+                gradient="from-cyan-500 to-blue-500"
+                index={0}
+              />
 
-                    {/* Enhanced Hover Effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"
-                      whileHover={{ scale: 1.05 }}
-                    />
+              {/* Career Growth */}
+              <FloatingIconCard
+                icon="📈"
+                title="Career Growth and Development"
+                content="We are committed to the professional growth and development of our employees. Through continuous learning opportunities, mentorship programs, and career advancement pathways, we empower our team members to reach their full potential and achieve their career goals."
+                gradient="from-purple-500 to-pink-500"
+                index={0.1}
+              />
 
-                    {/* Animated Border */}
-                    <motion.div
-                      className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r from-cyan-500/30 via-purple-500/30 to-emerald-500/30 opacity-0 group-hover:opacity-100"
-                      animate={{
-                        backgroundPosition: ['0% 0%', '100% 100%'],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: 'linear',
-                      }}
-                      style={{
-                        backgroundSize: '200% 200%',
-                        mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                        maskComposite: 'exclude',
-                        padding: '2px',
-                      }}
-                    />
-                  </div>
-                </motion.div>
-              ))}
+              {/* Collaborative Culture */}
+              <FloatingIconCard
+                icon="👥"
+                title="Collaborative Culture"
+                content="Our collaborative culture fosters teamwork, creativity, and knowledge sharing. At Veramasa, you will work alongside some of the brightest minds in the industry, exchanging ideas and developing innovative solutions together. We believe that our collective success is driven by the diverse perspectives and expertise of our team."
+                gradient="from-emerald-500 to-green-500"
+                index={0.2}
+              />
+
+              {/* Employee Benefits */}
+              <FloatingIconCard
+                icon="⭐"
+                title="Employee Benefits"
+                content="We offer a comprehensive benefits package designed to support the well-being and work-life balance of our employees. Our benefits include competitive salaries, health insurance, flexible working hours, remote work options, and more."
+                gradient="from-amber-500 to-orange-500"
+                index={0.3}
+              />
             </div>
           </div>
         </section>
 
-        {/* Enhanced Application Form Section */}
-        <section id="application" className="py-24 px-6 relative">
-          <FloatingParticles count={20} />
-          
-          <div className="max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, type: "spring" }}
-              className="text-center mb-16"
-            >
-              <motion.h2
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-4xl md:text-5xl font-bold mb-6 text-white"
-              >
-                Ready to <span className="bg-gradient-to-r from-cyan-400 to-purple-400 text-transparent bg-clip-text">Launch</span> Your Career?
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-xl text-slate-300 max-w-2xl mx-auto"
-              >
-                Join our team of innovators and help us build the future of technology
-              </motion.p>
-            </motion.div>
+        {/* Application Form Section */}
+        <section id="application-form" className="py-20 px-6 bg-gradient-to-b from-[#090d1a] to-[#0b1020]">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <AnimatedSectionTitle title="Mail Your Resume" gradient="from-cyan-400 to-emerald-400" delay={0.1} />
+            </div>
 
-            {/* Enhanced Form Container */}
+            {/* Form Container */}
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, type: "spring" }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               className="relative"
             >
-              <div className="relative p-10 rounded-3xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 shadow-2xl">
-                
-                {/* Enhanced Animated Border */}
+              <div className="relative p-8 rounded-3xl bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border border-white/10">
+                {/* Animated Border */}
                 <motion.div
-                  className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r from-cyan-500/30 via-purple-500/30 to-emerald-500/30"
+                  className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-emerald-500/20"
                   animate={{
                     backgroundPosition: ['0% 0%', '200% 200%'],
                   }}
                   transition={{
-                    duration: 4,
+                    duration: 3,
                     repeat: Infinity,
                     ease: 'linear',
                   }}
@@ -618,21 +444,20 @@ export default function Careers() {
                     padding: '2px',
                   }}
                 />
-                <div className="absolute inset-2 rounded-2xl bg-[#0b1020]" />
 
-                {/* Enhanced Success Overlay */}
+                {/* Success Overlay */}
                 <AnimatePresence>
                   {submitted && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="absolute inset-0 bg-emerald-500/10 backdrop-blur-xl rounded-3xl flex items-center justify-center z-20"
+                      className="absolute inset-0 bg-emerald-500/10 backdrop-blur-md rounded-3xl flex items-center justify-center z-10"
                     >
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring" }}
+                        transition={{ type: "spring", delay: 0.2 }}
                         className="text-center p-8"
                       >
                         <motion.div
@@ -640,55 +465,45 @@ export default function Careers() {
                             scale: [1, 1.2, 1],
                             rotate: [0, 10, -10, 0]
                           }}
-                          transition={{ duration: 0.6 }}
-                          className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-3xl mb-6 mx-auto shadow-2xl"
+                          transition={{ duration: 0.5 }}
+                          className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-2xl mb-6 mx-auto"
                         >
                           ✨
                         </motion.div>
-                        <h3 className="text-3xl font-bold text-white mb-4">Application Sent!</h3>
-                        <p className="text-slate-200 text-lg">We'll review your application and get back to you soon.</p>
-                        <motion.p
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.5 }}
-                          className="text-emerald-300 text-lg mt-4 font-semibold"
-                        >
-                          Welcome to the Veramasa family! 🎉
-                        </motion.p>
+                        <h3 className="text-2xl font-bold text-white mb-4">Application Sent!</h3>
+                        <p className="text-slate-200">We'll review your application and contact you soon.</p>
                       </motion.div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                <form onSubmit={handleSubmit} className="relative z-10 space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <form onSubmit={handleSubmit} className="relative z-10 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <AnimatedFormField
                       label="Full Name"
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
                       required
-                      delay={0.1}
                     />
                     <AnimatedFormField
-                      label="Email Address"
+                      label="Email"
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      delay={0.2}
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <AnimatedFormField
                       label="Phone Number"
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      delay={0.3}
+                      required
                     />
                     <AnimatedFormField
                       label="Position Applying For"
@@ -696,7 +511,6 @@ export default function Careers() {
                       value={formData.position}
                       onChange={handleInputChange}
                       required
-                      delay={0.4}
                     />
                   </div>
 
@@ -706,63 +520,93 @@ export default function Careers() {
                     name="resume"
                     onChange={handleInputChange}
                     required
-                    delay={0.5}
                   />
 
                   <AnimatedFormField
-                    label="Tell us about yourself"
+                    label="Additional Comments"
                     name="comments"
                     value={formData.comments}
                     onChange={handleInputChange}
                     textarea
-                    delay={0.6}
                   />
 
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 }}
-                    className="pt-8"
+                    transition={{ delay: 0.4 }}
+                    className="pt-6"
                   >
-                    <MagneticButton
+                    <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-5 px-8 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold rounded-2xl text-xl disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+                      className="w-full py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
                     >
                       {isSubmitting ? (
-                        <div className="flex items-center justify-center gap-4">
+                        <div className="flex items-center justify-center gap-3">
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="w-6 h-6 border-2 border-white border-t-transparent rounded-full"
+                            className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                           />
-                          <span className="text-lg">Launching Your Career...</span>
+                          <span>Submitting...</span>
                         </div>
                       ) : (
-                        <div className="flex items-center justify-center gap-4">
-                          <span className="text-lg">Launch My Career</span>
+                        <div className="flex items-center justify-center gap-3">
+                          <span>Submit Application</span>
                           <motion.span
-                            animate={{ 
-                              x: [0, 6, 0],
-                              scale: [1, 1.2, 1]
-                            }}
+                            animate={{ x: [0, 4, 0] }}
                             transition={{ duration: 1.5, repeat: Infinity }}
-                            className="text-2xl"
                           >
                             🚀
                           </motion.span>
                         </div>
                       )}
-                    </MagneticButton>
+                    </button>
                   </motion.div>
                 </form>
               </div>
             </motion.div>
           </div>
         </section>
+
+        {/* Final CTA */}
+        <section className="py-20 px-6 bg-gradient-to-br from-cyan-500/5 to-purple-500/5">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-3xl md:text-4xl font-bold mb-6 text-white"
+            >
+              Ready to <span className="bg-gradient-to-r from-cyan-400 to-purple-400 text-transparent bg-clip-text">Transform</span> Your Career?
+            </motion.h2>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed"
+            >
+              Join Veramasa and be part of an innovative team shaping the future of technology
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <MagneticButton
+                onClick={() => document.getElementById('application-form').scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 text-lg"
+              >
+                Start Your Journey Today
+              </MagneticButton>
+            </motion.div>
+          </div>
+        </section>
       </main>
 
-      
+   
     </div>
   );
 }
